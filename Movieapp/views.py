@@ -1,4 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 
 # Create your views here.
 def index(request):
@@ -10,5 +13,13 @@ def movie(request):
 def login_view(request):
   return render(request,'login.html')
 
-def register_view(request):
-  return render(request,'registration.html')
+def auth_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('login'))
+    else:
+        form = UserCreationForm()
+    
+    return render(request, 'registration/signup.html', {'form': form})
